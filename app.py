@@ -111,47 +111,27 @@ def add_bar_labels(ax, bars, fmt="{:.0f}", color=None):
             ax.text(bar.get_x() + bar.get_width() / 2, v + max_v * 0.01, fmt.format(v), va="bottom", ha="center", fontsize=7.5, color=color)
 
 # ── DATA LOADERS & ML PIPELINE ──────────────────────────────────────────────────
+
 @st.cache_data
 def load_raw_data():
+    # Load data mentah murni untuk ditampilkan di menu "Dataset"
     df_raw = pd.read_csv("dataset/tourism_with_id.csv")
     return df_raw
 
 @st.cache_data
 def load_processed_data():
-    df = load_raw_data()
-    # Data Cleaning
-    cols_to_drop = ['Time_Minutes', 'Coordinate', 'Lat', 'Long', 'Unnamed: 11', 'Unnamed: 12']
-    df_clean = df.drop(columns=[c for c in cols_to_drop if c in df.columns])
-    df_clean = df_clean.dropna(subset=['Place_Name', 'Description', 'Category', 'City'])
+    # BACA DATA YANG SUDAH BERSIH DARI JUPYTER NOTEBOOK
+    # Semua proses Sastrawi, drop NA, dan text_cleaning sudah tidak ada di sini
+    df_clean = pd.read_csv("dataset/tourism_cleaned.csv")
     
-    # Text Normalization
-    def text_cleaning(text):
-        text = str(text).lower()
-        text = re.sub(r'[^a-zA-Z0-9\s]', ' ', text)
-        text = re.sub(r'\s+', ' ', text).strip()
-        return text
-
-    df_clean['Desc_Clean'] = df_clean['Description'].apply(text_cleaning)
-    df_clean['Cat_Clean'] = df_clean['Category'].apply(text_cleaning)
-    df_clean['City_Clean'] = df_clean['City'].apply(text_cleaning)
-    
-    # Feature Merging
-    df_clean['tags'] = df_clean['Desc_Clean'] + " " + \
-                       (df_clean['Cat_Clean'] + " ") * 2 + \
-                       (df_clean['City_Clean'] + " ") * 2
+    # Pastikan kolom tags tidak ada yang bernilai NaN
+    df_clean['tags'] = df_clean['tags'].fillna('') 
     return df_clean
 
 @st.cache_resource
 def build_model(data):
-    try:
-        nltk.data.find('corpora/stopwords')
-    except LookupError:
-        nltk.download('stopwords')
-        
-    indo_stopwords = stopwords.words('indonesian')
-    custom_stopwords = indo_stopwords + ['wisata', 'tempat', 'berada', 'terletak', 'merupakan', 'juga', 'dengan']
-
-    tfidf = TfidfVectorizer(stop_words=custom_stopwords)
+    # Langsung masukkan kolom 'tags' yang sudah bersih ke TF-IDF Vectorizer
+    tfidf = TfidfVectorizer()
     tfidf_matrix = tfidf.fit_transform(data['tags'])
     cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
     return tfidf_matrix, cosine_sim
@@ -475,10 +455,10 @@ elif menu == "Training":
         
         st.markdown("<br>Hasil Evaluasi Keseluruhan Model (@k=5)", unsafe_allow_html=True)
         em1, em2, em3, em4 = st.columns(4)
-        em1.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">Mean Prec</div><div class="metric-value" style="font-size:1.2rem">0.7670</div></div>', unsafe_allow_html=True)
-        em2.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">Mean Recall</div><div class="metric-value" style="font-size:1.2rem">0.0555</div></div>', unsafe_allow_html=True)
-        em3.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">F1-Score</div><div class="metric-value" style="font-size:1.2rem">0.0976</div></div>', unsafe_allow_html=True)
-        em4.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">MAP</div><div class="metric-value" style="font-size:1.2rem">0.8500</div></div>', unsafe_allow_html=True)
+        em1.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">Mean Prec</div><div class="metric-value" style="font-size:1.2rem">0.8412</div></div>', unsafe_allow_html=True)
+        em2.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">Mean Recall</div><div class="metric-value" style="font-size:1.2rem">0.8561</div></div>', unsafe_allow_html=True)
+        em3.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">F1-Score</div><div class="metric-value" style="font-size:1.2rem">0.8462</div></div>', unsafe_allow_html=True)
+        em4.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">MAP</div><div class="metric-value" style="font-size:1.2rem">0.8976</div></div>', unsafe_allow_html=True)
         
         st.caption("Berdasarkan evaluasi relevansi Kategori antara target dan hasil rekomendasi (seperti di Jupyter Notebook).")
 
