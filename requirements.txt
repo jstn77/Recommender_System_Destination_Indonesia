@@ -45,3 +45,4 @@ tqdm==4.67.3
 traitlets==5.14.3
 tzdata==2026.2
 wcwidth==0.6.0
+streamlit==1.37.1
