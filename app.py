@@ -473,7 +473,7 @@ elif menu == "Training":
         m1.markdown(f'<div class="metric-card"><div class="metric-label">Dimensi TF-IDF Matrix</div><div class="metric-value" style="font-size:1.4rem">{tfidf_matrix.shape[0]} x {tfidf_matrix.shape[1]}</div></div>', unsafe_allow_html=True)
         m2.markdown(f'<div class="metric-card"><div class="metric-label">Dimensi Cosine Sim</div><div class="metric-value" style="font-size:1.4rem">{cosine_sim.shape[0]} x {cosine_sim.shape[1]}</div></div>', unsafe_allow_html=True)
         
-        st.markdown("<br>#### Hasil Evaluasi Keseluruhan Model (@k=5)", unsafe_allow_html=True)
+        st.markdown("<br>Hasil Evaluasi Keseluruhan Model (@k=5)", unsafe_allow_html=True)
         em1, em2, em3, em4 = st.columns(4)
         em1.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">Mean Prec</div><div class="metric-value" style="font-size:1.2rem">0.7670</div></div>', unsafe_allow_html=True)
         em2.markdown('<div class="metric-card" style="padding:0.5rem"><div class="metric-label">Mean Recall</div><div class="metric-value" style="font-size:1.2rem">0.0555</div></div>', unsafe_allow_html=True)
