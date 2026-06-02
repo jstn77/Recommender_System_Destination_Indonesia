@@ -502,7 +502,7 @@ elif menu == "Prediction":
                 if len(idx_list) > 0:
                     idx = idx_list[0]
                     sim_scores = list(enumerate(cosine_sim[idx]))
-                    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[0:top_k+1]
+                    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[0:top_k]
                     place_indices = [i[0] for i in sim_scores]
                     
                     recomends = filtered_df.iloc[place_indices].copy()
