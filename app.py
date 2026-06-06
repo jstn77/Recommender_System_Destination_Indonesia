@@ -179,7 +179,7 @@ with st.sidebar:
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("""
     <div style="text-align:center;font-size:0.8rem;color:var(--fg-2);">
-        Group 02<br>ML Destination Recommender
+        Machine Learning Destination Recommender<br>Group 09<br>1. Kian Aurelio Wibowo (2802464582)<br>2. Justin Christian Kenan (2802399463)<br>3. Justin Christroper (2802420100)
     </div>
     """, unsafe_allow_html=True)
 
